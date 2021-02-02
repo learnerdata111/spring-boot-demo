@@ -1,0 +1,55 @@
+--name:2
+--author:zl
+--create time:2021-02-02 15:24
+select
+t.shop_id as 店铺id,
+max(t.seller_nick) as 店铺名,
+','|| t.item_id as 商品id,
+max(t.item_title) as 商品名,
+sum(case when coalesce(t.pay_time,'')<>'' then t.item_num else 0 end) as 付款件数,
+sum(case when coalesce(t.pay_time,'')<>'' then t.total_amount else 0 end) as 付款金额,
+sum(case when coalesce(t.consign_time,'')<>'' and t.refund_status = '30' then t.item_num else 0 end) as 退货件数,
+sum(case when coalesce(t.consign_time,'')<>'' and t.refund_status = '30' then t.total_amount else 0 end) as 退货金额
+from xinc_cdm.dwd_trd_order_kwaishop_df t
+where t.shop_id in
+(
+'403082302'
+,'704974956'
+,'8322582'
+,'265046537'
+,'529984242'
+,'544447457'
+,'140673020'
+,'151344124'
+)
+and to_char(CAST(t.create_time as TIMESTAMP ),'yyyymmdd') BETWEEN '20201007' and '20201110'
+and t.dt = '20210201'
+and t.pay_time is not null
+group by t.shop_id,','||t.item_id
+;
+
+select  *
+from  xinc_cdm.dwd_trd_order_jdp_taobao_df t
+;
+select t.pid, count(1)
+from xinc_cdm.dwd_trd_order_cps_taobao_df t
+where t.dt = '20210201'
+and  to_char(CAST(t.tk_create_time as TIMESTAMP ),'yyyymmdd') BETWEEN '20201201' and '20201231'
+group by t.pid
+order by 2 desc
+limit 20;
+
+select  t.live_platform_user_id,t.anchor_nick,t.anchor_id
+from xinc_cdm.dim_live_magician_anchor_info_df t
+where t.dt = '20210201'
+and  t.anchor_nick like  '%赵梦%'
+ limit 20 ;
+
+
+
+
+
+
+
+
+

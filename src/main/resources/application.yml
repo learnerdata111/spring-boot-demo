@@ -1,0 +1,8 @@
+server:
+  port: 8080
+spring:
+    datasource:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://test-xc-dev.mysql.rds.aliyuncs.com:3331/dw_metadata?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+      username: test_xc_dev
+      password: x!c@_d#ev$xcD_SdeAvM
