@@ -45,6 +45,47 @@ where t.dt = '20210201'
 and  t.anchor_nick like  '%赵梦%'
  limit 20 ;
 
+create table xinc_ods.ods_trade_refund_flow_info like xinc_ods_dev.ods_trade_refund_flow_info ;
+create table xinc_ods.stg_trade_refund_flow_info like xinc_ods_dev.ods_trade_refund_flow_info ;
+
+insert overwrite table xinc_ods.ods_trade_refund_flow_info partition(dt)
+ select * from xinc_ods_dev.ods_trade_refund_flow_info
+ where dt<='20210217' ;
+
+create table xinc_ods.ods_trade_refund_order_action_info like xinc_ods_dev.ods_trade_refund_order_action_info;
+create table xinc_ods.stg_trade_refund_order_action_info like xinc_ods_dev.ods_trade_refund_order_action_info;
+
+insert overwrite table xinc_ods.ods_trade_refund_order_action_info partition(dt)
+ select * from xinc_ods_dev.ods_trade_refund_order_action_info
+ where dt<='20210217' ;
+;
+create table xinc_ods.ods_trade_refund_order_info like xinc_ods_dev.ods_trade_refund_order_info ;
+create table xinc_ods.stg_trade_refund_order_info like xinc_ods_dev.ods_trade_refund_order_info ;
+
+insert overwrite table xinc_ods.ods_trade_refund_order_info partition(dt)
+ select * from xinc_ods_dev.ods_trade_refund_order_info
+ where dt<='20210217' ;
+;
+create table xinc_ods.ods_trade_refund_order_logistics like xinc_ods_dev.ods_trade_refund_order_logistics;
+create table xinc_ods.stg_trade_refund_order_logistics like xinc_ods_dev.ods_trade_refund_order_logistics;
+
+insert overwrite table xinc_ods.ods_trade_refund_order_logistics partition(dt)
+ select * from xinc_ods_dev.ods_trade_refund_order_logistics
+ where dt<='20210217' ;
+
+drop table xinc_ods.ods_trade_refund_sub_order_info;
+create table xinc_ods.ods_trade_refund_sub_order_info like xinc_ods_dev.ods_trade_refund_sub_order_info ;
+create table xinc_ods.stg_trade_refund_sub_order_info like xinc_ods_dev.ods_trade_refund_sub_order_info ;
+
+insert overwrite table xinc_ods.ods_trade_refund_sub_order_info partition(dt)
+select * from xinc_ods_dev.ods_trade_refund_sub_order_info
+where dt<='20210217' ;
+
+
+
+
+
+
 
 
 
