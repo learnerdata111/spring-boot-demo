@@ -1,0 +1,126 @@
+--name:5
+--author:zl
+--create time:2021-03-01 14:08
+
+-- 修改表结构
+
+alter table xinc_ods.ods_itemcenter_basic_item  add columns (product_type STRING, trade_mode BIGINT,
+market_time STRING , expiration bigint,
+  selling_points STRING, style_code STRING ,
+  brand_name_en STRING);
+
+
+alter table xinc_ods_dev.ods_itemcenter_basic_item change column brane_name_en rename to brand_name_en;
+
+
+
+alter table xinc_ods.ods_itemcenter_basic_item_sku  add columns (style_code STRING, trade_mode BIGINT,
+selling_points STRING , market_time datetime,
+  expiration bigint, is_combined STRING ,
+  brand_name_en STRING , brand_name STRING, product_type STRING,  cate_id STRING , cate_names STRING);
+
+
+
+alter table xinc_ods.ods_itemcenter_basic_item_sku_goods  add columns (
+  goods_supplier_key string,
+  supplier_id BIGINT,
+  product_type TINYINT
+);
+
+alter table xinc_ods.ods_itemcenter_category  add columns (
+  is_white_list TINYINT
+);
+
+
+alter table xinc_ods.ods_itemcenter_basic_item_sku_goods drop  columns ( is_white_list TINYINT);
+
+
+alter table xinc_ods.ods_itemcenter_goods  add columns (
+primary_goods_code string,
+expiration string,
+time_to_market string,
+mode_trade string,
+selling_points string,
+brand_name_en string
+);
+
+
+alter table xinc_ods.ods_itemcenter_goods_prop  add columns (
+  show_order bigint
+);
+
+
+
+alter table xinc_ods_dev.ods_itemcenter_goods_property_value  add columns (
+  category_type string
+);
+
+
+alter table xinc_ods.ods_itemcenter_goods_supplier  add columns (
+  now_inventory BIGINT,
+  pre_sell_inventory BIGINT,
+  comment_remark string,
+  gmt_invalid datetime);
+
+
+alter table xinc_ods_dev.ods_itemcenter_item_snapshot  add columns (
+
+  expiration string,
+  time_to_market string,
+  product_area string
+
+);
+
+
+alter table xinc_ods.ods_itemcenter_launch_item_sku  add columns (
+  pre_sell_inventory BIGINT,
+  comment_remark string,
+  presell_cycle BIGINT ,
+  gmt_production datetime
+
+);
+
+
+alter table xinc_ods.ods_itemcenter_launch_item  add columns (
+  biz_type bigint,
+  trait string
+
+);
+
+
+insert overwrite table xinc_ods.ods_cic_cps_item_image partition(dt)
+  select * from xinc_ods_dev.ods_cic_cps_item_image where dt <= '20210228';
+
+
+
+alter table xinc_ods.ods_itemcenter_launch_item_snapshot  add columns (
+  biz_type bigint,
+  trait string
+
+);
+
+alter table xinc_ods_dev.ods_itemcenter_launch_item_sku_snapshot  add columns (
+  pre_sell_inventory BIGINT,
+  comment_remark string ,
+  presell_cycle bigint,
+  gmt_production datetime
+);
+
+
+
+alter table xinc_ods.ods_itemcenter_resource_url  add columns (
+ title string
+);
+
+
+
+
+
+
+
+
+
+
+
+
+

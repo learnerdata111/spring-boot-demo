@@ -1,0 +1,90 @@
+--name:3
+--author:zl
+--create time:2021-02-25 16:23
+
+cps_item_center
+          cps_audit_record  1
+          cps_item_image   1 增量 数据未同步
+          cps_live_plan    1
+          cps_live_plan_product 1
+          cps_live_plan_sku 1
+itemcenter
+          approve_bills_hi_actinst 1
+          approve_button 1
+          approve_flow 1
+          approve_flow_def_process 1
+          approve_flow_definition 1
+          approve_flow_dept 1
+          approve_flow_view_user 1
+          approve_inner_audit_record 1
+          audition_goods 1
+          audition_goods_supplier_log 1
+          audition_style 1
+          basic_item 1
+          basic_item_sku 1
+          basic_item_sku_goods 1
+          basic_item_supplier 1
+          basic_item_sku_supplier 1
+          borrow_sample_bill  1
+          category 1 x
+          clear_sample_bill 1
+          freight_rule 1
+          freight_template_rule 1
+          goods 1
+          goods_prop 1
+          goods_category_property_value 1
+          goods_property_value 1
+          goods_supplier 1
+          item 1
+          item_sku_snapshot 1
+          item_snapshot
+          launch_item 1
+          launch_item_sku
+
+
+launch_item_sku_snapshot 1
+launch_item_snapshot 1
+measure_unit 1
+pricing_proposal 1
+pricing_proposal_create_config 1
+pricing_proposal_goods 1
+pricing_proposal_operate_log 1
+pricing_proposal_review 1
+pricing_proposal_template
+qualification_audit_bill 1
+
+
+quality_control_bill 1
+quality_control_bill_detail 1
+quality_control_log 1
+quality_control_sample 1
+quality_control_task 1
+
+
+
+record_principal 1
+report_export_history
+resource_url 1
+scan_code_goods_log 1
+shop 1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

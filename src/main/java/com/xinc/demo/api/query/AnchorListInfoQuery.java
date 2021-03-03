@@ -15,11 +15,10 @@ import javax.validation.constraints.NotNull;
 @Setter
 @ApiModel("主播列表请求参数")
 public class AnchorListInfoQuery extends PagedParam implements Serializable {
-
     /**
      * 数据源，是否内外部主播
      */
     @NotNull(message= "是否内外部主播")
-    @ApiModelProperty("是否内外部主播，1是 0否")
+        @ApiModelProperty("是否内外部主播，1是 0否")
     private Integer is_inner;
 }

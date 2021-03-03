@@ -1,0 +1,932 @@
+--name:4
+--author:zl
+--create time:2021-03-01 10:45
+
+drop table xinc_ods_dev.stg_cic_cps_item_image;
+create table if not exists xinc_ods.stg_cic_cps_item_image(
+  id                 BIGINT  COMMENT '主键id',
+  gmt_create         datetime   COMMENT  '创建时间',
+  gmt_modified       datetime  COMMENT  '创建时间',
+  creator            STRING  COMMENT  '创建人',
+  modifier           STRING  COMMENT   '修改人',
+  is_deleted         BIGINT  COMMENT   '是否删除：0-未删除,1-删除',
+  cps_item_id        BIGINT  COMMENT   'cps商品id',
+  type               BIGINT  COMMENT   '图片类型：10-主图,20-详情图',
+  img_url            STRING  COMMENT   '图片URL',
+  img_seq            BIGINT  COMMENT   '图片顺序',
+  width              BIGINT  COMMENT   '宽度',
+  height             BIGINT  COMMENT   '高度',
+  live_plan_id       BIGINT  COMMENT   '直播计划',
+  proc_time		string comment'数据处理时间yyyy-MM-ddHH:mm:ss'
+)
+comment 'cps商品图片表'
+partitioned by
+(
+  dt string comment '时间分区 yyyymmdd'
+);
+
+drop table xinc_ods_dev.ods_cic_cps_live_plan_product;
+CREATE TABLE IF NOT EXISTS xinc_ods.ods_cic_cps_live_plan_product(
+  `id`                            BIGINT COMMENT '主键id',
+  `gmt_create`                    DATETIME COMMENT '创建时间',
+  `gmt_modified`                  DATETIME COMMENT '修改时间',
+  `creator`                       STRING COMMENT '创建人',
+  `modifier`                      STRING COMMENT '修改人',
+  `is_deleted`                    BIGINT COMMENT '是否删除：0-未删除,1-删除',
+  `cps_item_id`                   BIGINT COMMENT 'cps商品id',
+  `live_plan_id`                  BIGINT COMMENT '直播计划id',
+  `product_id`                    STRING COMMENT '平台商品款号id',
+  `item_supplier_key`             BIGINT COMMENT '商品供应商id',
+  `product_code`                  STRING COMMENT '平台商品款号编码',
+  `item_alias`                    STRING COMMENT '商品别名',
+  `item_main_img`                 STRING COMMENT '商品主图',
+  `gift_img`                      STRING COMMENT '赠品图片',
+  `gift_name`                     STRING COMMENT '赠品名称',
+  `product_live_price`            BIGINT COMMENT '商品直播价',
+  `price`                         BIGINT COMMENT '市场价',
+  `category_name_path`            STRING COMMENT '类目名称路径',
+  `product_commission_rate`       DECIMAL COMMENT '商品佣金比例',
+  `min_product_commission_rate`   DECIMAL COMMENT '最小商品佣金比例',
+  `live_mechanism`                STRING COMMENT '直播机制',
+  `product_sell_point`            STRING COMMENT '卖点信息',
+  `sign_dept`                     STRING COMMENT '提报人部门',
+  `sign_person`                   STRING COMMENT '提报人',
+  `sale_volume`                   BIGINT COMMENT '销量',
+  `amount`                        BIGINT COMMENT '销售额',
+  `inventory`                     BIGINT COMMENT '场次库存(万件)',
+  `inventory_capacity`            BIGINT COMMENT '产能',
+  `pre_sale_cycle`                STRING COMMENT '预售周期',
+  `pre_sale_inventory_sum`        BIGINT COMMENT '预售总库存',
+  `inventory_seven`               BIGINT COMMENT '7天可售库存(万件)',
+  `inventory_fifteen`             BIGINT COMMENT '15天可售库存(万件)',
+  `inventory_thirty`              BIGINT COMMENT '30天可售库存(万件)',
+  `inventory_fourty_five`         BIGINT COMMENT '45天可售库存(万件)',
+  `inventory_sixty`               BIGINT COMMENT '60天可售库存(万件)',
+  `history_low_price`             BIGINT COMMENT '历史最低价',
+  `low_price`                     BIGINT COMMENT '全网最低价',
+  `competitive_product_link`      STRING COMMENT '竞品商品链接',
+  `price_checker`                 STRING COMMENT '核价人',
+  `check_price_remark`            STRING COMMENT '核价说明',
+  `check_price_suggest`           STRING COMMENT '核价建议',
+  `quality_control_status`        STRING COMMENT '品控状态',
+  `check_price_status`            STRING COMMENT '核价状态',
+  `data_complete`                 STRING COMMENT '资料是否完善',
+  `special_approval`              STRING COMMENT '是否是特批商品',
+  `special_approval_person`       STRING COMMENT '特批人',
+  `special_approval_url`          STRING COMMENT '特批图片',
+  `product_status`                STRING COMMENT '商品状态',
+  `supply_name`                   STRING COMMENT '供应商名称',
+  `supply_id`                     STRING COMMENT '供应商id',
+  `shop_url`                      STRING COMMENT '店铺地址',
+  `shop_belongs`                  STRING COMMENT '店铺所属',
+  `docking_people_dept`           STRING COMMENT '对接人部门',
+  `docking_people`                STRING COMMENT '对接人',
+  `item_id`                       STRING COMMENT '第三方产品id',
+  `item_url`                      STRING COMMENT '第三方产品链接',
+  `product_live_url`              STRING COMMENT '产品直播链接',
+  `taobao_sub_account`            STRING COMMENT '淘宝旺旺账号',
+  `sub_account`                   STRING COMMENT '子账号',
+  `is_selected`                   STRING COMMENT '是否选中,Y:是，N:否，PEND : 待定',
+  `top_time`                      DATETIME COMMENT '置顶时间',
+  `select_time`                   DATETIME COMMENT '选用时间',
+  `url_verify`                    STRING COMMENT '审核商品链接',
+  `product_extra`                 STRING COMMENT '产品附加值',
+  `interest_point`                STRING COMMENT '其他主播合作价格及利益点',
+  `shop_name`                     STRING COMMENT '店铺名称',
+  `pit_fee`                       DECIMAL COMMENT '坑位费（万元）',
+  `audit_status`                  STRING COMMENT '主管审核，PENDING：待审核，PASSED：审核通过，REJECTED：驳回',
+  `audit_person`                  STRING COMMENT '主管审核人',
+  `audit_time`                    DATETIME COMMENT '主管审核时间',
+  `supply_price`                  BIGINT COMMENT '供货价,取sku中最小的供货价',
+  `selection_source`              STRING COMMENT '选品来源 招商提报：merchants,运营提报：operations,主播自选：anchor',
+  `contract_no`                   STRING COMMENT '合同编号',
+  `cooperation_method`            BIGINT COMMENT '合作模式：1:分佣，2:供销 - 我是代理商，3:供销 - 我是厂家, 4:分润',
+  `pend_reason`                   STRING COMMENT '待定理由',
+  `max_supply_price`              BIGINT COMMENT '供货价, 取sku中最大的供货价',
+  `info_modified`                 BIGINT COMMENT '可播状态信息修改 默认是0',
+  `max_product_commission_rate`   DECIMAL COMMENT '最大商品佣金比例',
+  `spot_inventory`                BIGINT COMMENT '现货库存(万件)',
+  `contract_sub_id`               BIGINT COMMENT '子合同id',
+  `style_code`                    STRING COMMENT '款式编码',
+  `goods_principal_ids`           STRING COMMENT '货品负责人id(多个逗号隔开)',
+  `goods_principal_names`         STRING COMMENT '货品负责人姓名(多个逗号隔开)',
+proc_time STRING COMMENT '更新时间'
+)
+COMMENT '直播计划商品SKU表'
+PARTITIONED BY (dt STRING);
+
+
+
+
+CREATE TABLE IF NOT EXISTS xinc_ods.ods_cic_cps_live_plan_sku(
+  `id`                            BIGINT COMMENT '主键id',
+  `gmt_create`                    DATETIME COMMENT '创建时间',
+  `gmt_modified`                  DATETIME COMMENT '修改时间',
+  `creator`                       STRING COMMENT '创建人',
+  `modifier`                      STRING COMMENT '修改人',
+  `is_deleted`                    BIGINT COMMENT '是否删除：0-未删除,1-删除',
+  `cps_item_id`                   BIGINT COMMENT 'cps商品id',
+  `live_plan_id`                  BIGINT COMMENT '直播计划id',
+  `product_id`                    STRING COMMENT '平台商品款号id',
+  `sku_id`                        STRING COMMENT 'sku_id',
+  `sku_code`                      STRING COMMENT 'sku编码',
+  `quality_control_status`        STRING COMMENT '品控状态',
+  `check_price_status`            STRING COMMENT '核价状态',
+  `specification_name`            STRING COMMENT '规格名称',
+  `bar_code`                      STRING COMMENT '69码',
+  `supply_price`                  BIGINT COMMENT '供货价',
+  `live_price`                    BIGINT COMMENT 'sku直播价',
+  `commission_rate`               DECIMAL COMMENT '佣金比例',
+  `inventory`                     BIGINT COMMENT '场次库存',
+  `sku_supplier_key`              BIGINT COMMENT 'sku供货信息的主键',
+  `item_supplier_key`             BIGINT COMMENT 'item供货信息的主键',
+  `seven_inventory`               BIGINT COMMENT '7天库存',
+  `fifteen_inventory`             BIGINT COMMENT '15天库存',
+  `thirty_inventory`              BIGINT COMMENT '30天库存',
+  `forty_five_inventory`          BIGINT COMMENT '45天库存',
+  `sixty_inventory`               BIGINT COMMENT '60天库存',
+  `spot_inventory`                BIGINT COMMENT '现货库存',
+proc_time string
+)
+COMMENT '直播计划商品SKU表'
+PARTITIONED BY (dt STRING);
+
+
+
+CREATE TABLE IF NOT EXISTS xinc_ods.ods_itemcenter_approve_bills_hi_actinst(
+  `id`                            BIGINT COMMENT '主键ID',
+  `gmt_create`                    DATETIME COMMENT '创建时间',
+  `gmt_modified`                  DATETIME COMMENT '修改时间',
+  `creator`                       STRING COMMENT '创建人',
+  `modifier`                      STRING COMMENT '修改人',
+  `is_deleted`                    BIGINT COMMENT '是否删除：1(删除) 0(未删除)',
+  `approve_flow_id`               BIGINT COMMENT '审核流程Id',
+  `current_node_code`             STRING COMMENT '当前节点code',
+  `current_node_name`             STRING COMMENT '当前节点名称',
+  `target_node`                   STRING COMMENT '当前节点code',
+  `target_assign_type`            STRING COMMENT '目标节点指定方式 (1:创建人;2:职能上级;3:不指定;4:返回上一环节人员;)',
+  `bills_type`                    STRING COMMENT '单据类型(item_inner:商品内审;goods_pricing:核价流程)',
+  `bills_id`                      STRING COMMENT '单据Id',
+  `current_approver_id`           STRING COMMENT '当前审核人Id',
+  `current_role_id`               BIGINT COMMENT '当前审核角色Id',
+  `approver_desc`                 STRING COMMENT '审核描述',
+  `current_approver_name`         STRING COMMENT '当前审核人',
+  `target_name`                   STRING COMMENT '目标节点名称',
+  `current_approver_dept_id`      STRING COMMENT '当前审核部门Id',
+  `target_approver_id`            STRING COMMENT '目标审核人Id',
+  `target_approver_name`          STRING COMMENT '目标审核人名称',
+  `target_approver_dept_id`       STRING COMMENT '目标审核人部门Id',
+proc_time string
+)
+COMMENT '审核流--单据历史节点'
+PARTITIONED BY (dt STRING);
+
+
+
+CREATE TABLE IF NOT EXISTS  xinc_ods.ods_itemcenter_approve_button(
+  `id`                            BIGINT COMMENT '主键ID',
+  `gmt_create`                    DATETIME COMMENT '创建时间',
+  `gmt_modified`                  DATETIME COMMENT '修改时间',
+  `creator`                       STRING COMMENT '创建人',
+  `modifier`                      STRING COMMENT '修改人',
+  `is_deleted`                    BIGINT COMMENT '是否删除：1(删除) 0(未删除)',
+  `button_code`                   STRING COMMENT '按钮编码',
+  `button_name`                   STRING COMMENT '按钮名称',
+  `button_type`                   BIGINT COMMENT '按钮类型(1:普通按钮;2:审核同意;3:审核不同意;4:转交)',
+  `status`                        STRING COMMENT '状态 状态(1:启用;2:禁用)',
+proc_time string
+)
+COMMENT '审核按钮表'
+PARTITIONED BY (dt STRING);
+
+
+
+CREATE TABLE IF NOT EXISTS  xinc_ods.ods_itemcenter_approve_flow(
+  `id`                            BIGINT COMMENT '主键ID',
+  `gmt_create`                    DATETIME COMMENT '创建时间',
+  `gmt_modified`                  DATETIME COMMENT '修改时间',
+  `creator`                       STRING COMMENT '创建人',
+  `modifier`                      STRING COMMENT '修改人',
+  `is_deleted`                    BIGINT COMMENT '是否删除：1(删除) 0(未删除)',
+  `flow_name`                     STRING COMMENT '流程名称',
+  `flow_dept_id`                  STRING COMMENT '流程属于部门',
+  `bills_type`                    STRING COMMENT '单据类型 单据类型(item_inner:商品内审;goods_pricing:核价流程)',
+  `status`                        STRING COMMENT '状态 状态(1:启用;2:禁用)',
+  proc_time string
+
+)
+COMMENT '审核流程 '
+PARTITIONED BY (dt STRING);
+
+
+CREATE TABLE IF NOT EXISTS xinc_ods.ods_itemcenter_approve_flow_def_process(
+  `id`                            BIGINT COMMENT '主键ID',
+  `gmt_create`                    DATETIME COMMENT '创建时间',
+  `gmt_modified`                  DATETIME COMMENT '修改时间',
+  `creator`                       STRING COMMENT '创建人',
+  `modifier`                      STRING COMMENT '修改人',
+  `is_deleted`                    BIGINT COMMENT '是否删除：1(删除) 0(未删除)',
+  `approve_flow_id`               BIGINT COMMENT '审核流程Id',
+  `node_code`                     STRING COMMENT '节点code',
+  `target_node`                   STRING COMMENT '目标节点',
+  `target_assign_type`            BIGINT COMMENT '目标节点指定方式(1:创建人;2:职能上级;3:不指定;4:返回上一环节人员;5:固定人审批;6:固定多人或审批;)',
+  `show_order`                    BIGINT COMMENT '显示顺序',
+  `call_back_type`                BIGINT COMMENT '回调方式(1:spring方式回调;2:dubbo回调;3:mq方式回调)',
+  `clazz_name`                    STRING COMMENT '回调类',
+  `method_name`                   STRING COMMENT '回调方法',
+  `process_name`                  STRING COMMENT '流程分支名称',
+  `process_type`                  BIGINT COMMENT '流程类型(1:审核同意;2:审核驳回;3:流程转移;4:核价完成)',
+  `button_id`                     BIGINT COMMENT '按钮Id',
+  `jump_levels`                   BIGINT COMMENT '往上跳几级',
+  `employee_ids`                  STRING COMMENT '审批人员Id集合',
+  `employee_names`                STRING COMMENT '审批人员名称集合',
+proc_time string
+)
+COMMENT '审核流--定义去向进程'
+PARTITIONED BY (dt STRING);
+
+
+
+CREATE TABLE IF NOT EXISTS xinc_ods.ods_itemcenter_approve_flow_definition(
+  `id`                            BIGINT COMMENT '主键ID',
+  `gmt_create`                    DATETIME COMMENT '创建时间',
+  `gmt_modified`                  DATETIME COMMENT '修改时间',
+  `creator`                       STRING COMMENT '创建人',
+  `modifier`                      STRING COMMENT '修改人',
+  `is_deleted`                    BIGINT COMMENT '是否删除：1(删除) 0(未删除)',
+  `approve_flow_id`               BIGINT COMMENT '审核流程Id',
+  `node_code`                     STRING COMMENT '节点code',
+  `node_name`                     STRING COMMENT '节点名称',
+  `start_flag`                    BIGINT COMMENT '审批流开始标志（1:是;2:否）',
+  `final_flag`                    BIGINT COMMENT '审批流结束标志（1:是;2:否）',
+  `show_order`                    BIGINT COMMENT '顺序',
+proc_time string
+)
+COMMENT '审核流--定义'
+PARTITIONED BY (dt STRING);
+
+
+
+CREATE TABLE IF NOT EXISTS xinc_ods.ods_itemcenter_approve_flow_dept(
+  `id`                            BIGINT COMMENT '主键ID',
+  `gmt_create`                    DATETIME COMMENT '创建时间',
+  `gmt_modified`                  DATETIME COMMENT '修改时间',
+  `creator`                       STRING COMMENT '创建人',
+  `modifier`                      STRING COMMENT '修改人',
+  `is_deleted`                    BIGINT COMMENT '是否删除：1(删除) 0(未删除)',
+  `approve_flow_id`               BIGINT COMMENT '审核流程Id',
+  `flow_dept_id`                  STRING COMMENT '流程属于部门',
+  `bills_type`                    STRING COMMENT '单据类型',
+  `status`                        STRING COMMENT '状态 状态(1:启用;2:禁用)',
+proc_time STRING
+)
+COMMENT '审核按钮'
+PARTITIONED BY (dt STRING);
+
+
+
+
+CREATE TABLE IF NOT EXISTS xinc_ods.ods_itemcenter_approve_flow_view_user(
+  `id`                            BIGINT COMMENT '主键ID',
+  `gmt_create`                    DATETIME COMMENT '创建时间',
+  `gmt_modified`                  DATETIME COMMENT '修改时间',
+  `creator`                       STRING COMMENT '创建人',
+  `modifier`                      STRING COMMENT '修改人',
+  `is_deleted`                    BIGINT COMMENT '是否删除：1(删除) 0(未删除)',
+  `approve_flow_id`               BIGINT COMMENT '审核流程Id',
+  `user_id`                       STRING COMMENT '用户Id',
+proc_time string
+)
+COMMENT '审核流程--拥有查看权限人员'
+PARTITIONED BY (dt STRING);
+
+
+
+
+CREATE TABLE IF NOT EXISTS xinc_ods.ods_itemcenter_approve_inner_audit_record(
+  `id`                            BIGINT COMMENT '主键id',
+  `gmt_create`                    DATETIME COMMENT '创建时间',
+  `gmt_modified`                  DATETIME COMMENT '修改时间',
+  `creator`                       STRING COMMENT '创建人',
+  `modifier`                      STRING COMMENT '修改人',
+  `is_deleted`                    BIGINT COMMENT '是否删除：1(删除) 0(未删除)',
+  `goods_supplier_id`             BIGINT COMMENT '货品供应商ID',
+  `status`                        BIGINT COMMENT '状态 审核状态(1:待提交;2:待审核;3:审核通过;4:审核不通过)',
+  `description`                   STRING COMMENT '说明',
+  `gmt_submit`                    DATETIME COMMENT '提交时间',
+  `submit_user_id`                STRING COMMENT '提交人id',
+  `submit_user_name`              STRING COMMENT '提交人名称',
+  `audit_user_id`                 STRING COMMENT '当前内审负责人id',
+  `audit_user_name`               STRING COMMENT '当前内审负责人',
+proc_time string
+)
+COMMENT '审核--内审'
+PARTITIONED BY (dt STRING);
+
+
+
+
+CREATE TABLE IF NOT EXISTS xinc_ods.ods_itemcenter_audition_goods(
+  `id`                            BIGINT COMMENT '主键id',
+  `gmt_create`                    DATETIME COMMENT '创建时间',
+  `gmt_modified`                  DATETIME COMMENT '修改时间',
+  `creator`                       STRING COMMENT '创建人',
+  `modifier`                      STRING COMMENT '修改人',
+  `is_deleted`                    BIGINT COMMENT '是否删除：1(删除) 0(未删除)',
+  `goods_id`                      STRING COMMENT '货品id',
+  `goods_code`                    STRING COMMENT '货品编号',
+  `primary_goods_id`              STRING COMMENT '主货品编号',
+  `style_code`                    STRING COMMENT '款式编码',
+  `barcode`                       STRING COMMENT '实物条码(69码)',
+  `img_url`                       STRING COMMENT '货品图片',
+  `cat_id`                        STRING COMMENT '类目id',
+  `cat_name`                      STRING COMMENT '类目名称',
+  `goods_name`                    STRING COMMENT '货品名称',
+  `goods_spec`                    STRING COMMENT '货品规格',
+  `brand_name`                    STRING COMMENT '品牌名称',
+  `brand_name_en`                 STRING COMMENT '品牌名称（外文）',
+  `expiration`                    BIGINT COMMENT '保质期',
+  `time_to_market`                STRING COMMENT '上市时间',
+  `mode_trade`                    STRING COMMENT '贸易方式',
+  `selling_points`                STRING COMMENT '卖点',
+  `price`                         BIGINT COMMENT '价格（分为单位）',
+  `remark`                        STRING COMMENT '备注',
+  `modifiable`                    BIGINT COMMENT '是否可以修改 (0是不可编辑;1:可编辑)',
+  `audition_style_id`             BIGINT COMMENT '海选货品款式Id',
+  `goods_code_as_barcode`         BIGINT COMMENT '实物条码是否采用货品编码',
+proc_time string
+)
+COMMENT '海选货品表'
+PARTITIONED BY (dt STRING);
+
+
+
+CREATE TABLE IF NOT EXISTS xinc_ods.ods_itemcenter_audition_goods_supplier_log(
+  `id`                            BIGINT COMMENT '主键ID',
+  `gmt_create`                    DATETIME COMMENT '创建时间',
+  `gmt_modified`                  DATETIME COMMENT '修改时间',
+  `creator`                       STRING COMMENT '创建人',
+  `modifier`                      STRING COMMENT '修改人',
+  `is_deleted`                    BIGINT COMMENT '是否删除：1(删除) 0(未删除)',
+  `log_id`                        STRING COMMENT '错误Id',
+  `goods_supplier_id`             BIGINT COMMENT '货品供应商Id',
+  `error_info`                    STRING COMMENT '错误信息',
+  proc_time  string
+
+)
+COMMENT '货品供应商导出错误日志'
+PARTITIONED BY (dt STRING);
+
+
+
+
+CREATE TABLE IF NOT EXISTS xinc_ods.ods_itemcenter_audition_style(
+  `id`                            BIGINT COMMENT '主键ID',
+  `gmt_create`                    DATETIME COMMENT '创建时间',
+  `gmt_modified`                  DATETIME COMMENT '修改时间',
+  `creator`                       STRING COMMENT '创建人',
+  `modifier`                      STRING COMMENT '修改人',
+  `is_deleted`                    BIGINT COMMENT '是否删除：1(删除) 0(未删除)',
+  `style_name`                    STRING COMMENT '款式名称',
+  `style_code`                    STRING COMMENT '款式编码',
+  `cat_id`                        STRING COMMENT '类目Id',
+  `cat_name`                      STRING COMMENT '类目名称',
+  `brand_name`                    STRING COMMENT '品牌名称',
+  `brand_name_en`                 STRING COMMENT '品牌名称(英文)',
+  `expiration`                    BIGINT COMMENT '保质期',
+  `time_to_market`                STRING COMMENT '上市时间',
+  `mode_trade`                    BIGINT COMMENT '贸易方式',
+  `product_area`                  STRING COMMENT '厂地',
+  `modifiable`                    BIGINT COMMENT '是否可编辑(1:可编辑；0:不可编辑)',
+  `prop_ids`                      STRING COMMENT '以,分割保存款式的规格Id',
+  `item_id`                       STRING COMMENT '商品id',
+proc_time string
+)
+COMMENT '海选款式表'
+PARTITIONED BY (dt STRING);
+
+
+
+CREATE TABLE IF NOT EXISTS xinc_ods.ods_itemcenter_basic_item_supplier(
+  `id`                            BIGINT COMMENT '主键ID',
+  `gmt_create`                    DATETIME COMMENT '创建时间',
+  `gmt_modified`                  DATETIME COMMENT '修改时间',
+  `creator`                       STRING COMMENT '创建人',
+  `modifier`                      STRING COMMENT '修改人',
+  `is_deleted`                    BIGINT COMMENT '是否删除：1(删除) 0(未删除)',
+  `basic_item_code`               STRING COMMENT '平台item编码',
+  `basic_item_id`                 STRING COMMENT '平台skuId',
+  `supplier_code`                 STRING COMMENT '供应商编码',
+  `shop_name`                     STRING COMMENT '店铺名称',
+  `shop_information`              STRING COMMENT '店铺信息',
+  `onsale_link`                   STRING COMMENT '在售链接',
+  `wang_wang`                     STRING COMMENT '淘宝旺旺账号',
+  `our_principal_name`            STRING COMMENT '我方对接人名称',
+  `live_price`                    BIGINT COMMENT '直播价',
+  `live_hand_price`               BIGINT COMMENT '直播到手价',
+  `live_mechanism`                STRING COMMENT '直播机制',
+  `commission_rate`               DECIMAL COMMENT '佣金比例',
+  `product_area`                  STRING COMMENT '产地',
+  `supply_price`                  BIGINT COMMENT '供货价，分为单位',
+  `gmt_production`                DATETIME COMMENT '生产日期',
+  `style_code`                    STRING COMMENT '款式编码',
+  `supplier_id`                   BIGINT COMMENT '供应商Id',
+  `supplier_name`                 STRING COMMENT '供应商名称',
+  `our_principal_dept`            STRING COMMENT '对接部门名称',
+  `our_principal_id`              STRING COMMENT '我方对接人Id',
+  `gift_name`                     STRING COMMENT '赠品名称',
+  `gift_img`                      STRING COMMENT '赠品图片',
+  `coop_ways`                     BIGINT COMMENT '合作方式(1:代销(佣金);2:供销;3生产销售)',
+  `quality_control_status`        BIGINT COMMENT '品控状态',
+  `check_price_status`            BIGINT COMMENT '核价状态',
+  `goods_principal_ids`           STRING COMMENT '货品负责人Id(多个逗号隔开)',
+  `goods_principal_names`         STRING COMMENT '货品负责人name(多个逗号隔开)',
+proc_time string
+)
+COMMENT '平台item的供货信息(扩展表)'
+PARTITIONED BY (dt STRING);
+
+
+
+CREATE TABLE IF NOT EXISTS xinc_ods.ods_itemcenter_borrow_sample_bill(
+  `id`                            BIGINT COMMENT '唯一标识',
+  `gmt_create`                    DATETIME COMMENT '创建时间',
+  `gmt_modified`                  DATETIME COMMENT '修改时间',
+  `creator`                       STRING COMMENT '创建人',
+  `modifier`                      STRING COMMENT '修改人',
+  `is_deleted`                    BIGINT COMMENT '是否已经删除',
+  `remark`                        STRING COMMENT '备注',
+  `quality_control_task_id`       BIGINT COMMENT '品控任务唯一标识',
+  `warehouse_id`                  BIGINT COMMENT '仓库ID',
+  `borrow_code`                   STRING COMMENT '借样单编号',
+  `storage_location_id`           BIGINT COMMENT '库位ID',
+  `storage_location_code`         STRING COMMENT '库位编码',
+  `status`                        BIGINT COMMENT '状态',
+  `goods_id`                      STRING COMMENT '商品ID',
+  `supplier_id`                   STRING COMMENT '供应商ID',
+  `borrow_num`                    BIGINT COMMENT '借出数量',
+  `borrow_time`                   DATETIME COMMENT '借出时间',
+  `borrow_description`            STRING COMMENT '借样备注',
+  `approve_time`                  DATETIME COMMENT '审核时间',
+  `approve_description`           STRING COMMENT '审核备注',
+  `borrow_approver`               STRING COMMENT '借样审核人',
+  `return_num`                    BIGINT COMMENT '归还数量',
+  `return_time`                   DATETIME COMMENT '归还时间',
+  `return_description`            STRING COMMENT '归还备注',
+  `return_approver`               STRING COMMENT '归还审核人',
+  `remove_num`                    BIGINT COMMENT '消样数量',
+  `remove_time`                   DATETIME COMMENT '消样时间',
+  `remove_description`            STRING COMMENT '消样备注',
+  `remove_approver`               STRING COMMENT '消样审核人',
+  `return_location_id`            BIGINT COMMENT '归还库位id',
+  `return_location_code`          STRING COMMENT '归还库位编码',
+proc_time string
+)
+COMMENT '借样单表'
+PARTITIONED BY (dt STRING);
+
+
+CREATE TABLE IF NOT EXISTS xinc_ods.ods_itemcenter_clear_sample_bill(
+  `id`                            BIGINT COMMENT '唯一标识',
+  `gmt_create`                    DATETIME COMMENT '创建时间',
+  `gmt_modified`                  DATETIME COMMENT '修改时间',
+  `creator`                       STRING COMMENT '创建人',
+  `modifier`                      STRING COMMENT '修改人',
+  `is_deleted`                    BIGINT COMMENT '是否已经删除',
+  `remark`                        STRING COMMENT '备注',
+  `quality_control_task_id`       BIGINT COMMENT '品控任务唯一标识',
+  `warehouse_id`                  BIGINT COMMENT '仓库ID',
+  `clear_code`                    STRING COMMENT '清样单编号',
+  `clear_num`                     BIGINT COMMENT '清样数量',
+  `status`                        BIGINT COMMENT '状态',
+  `approver`                      STRING COMMENT '审核人',
+  `approve_time`                  DATETIME COMMENT '审核时间',
+  `supplier_id`                   STRING COMMENT '供应商ID',
+  `goods_id`                      STRING COMMENT '商品ID',
+  `storage_location_id`           BIGINT COMMENT '库位ID',
+  `storage_location_code`         STRING COMMENT '库位编码',
+proc_time string
+)
+COMMENT '清样单表'
+PARTITIONED BY (dt STRING);
+
+
+
+CREATE TABLE IF NOT EXISTS xinc_ods.ods_itemcenter_freight_rule(
+  `id`                            BIGINT COMMENT '主键ID',
+  `gmt_create`                    DATETIME COMMENT '创建时间',
+  `gmt_modified`                  DATETIME COMMENT '修改时间',
+  `creator`                       STRING COMMENT '创建人',
+  `modifier`                      STRING COMMENT '修改人',
+  `is_deleted`                    BIGINT COMMENT '是否删除：1(删除) 0(未删除)',
+  `currency_type`                 BIGINT COMMENT '货币种类:人民币，美元，欧元',
+  `charging_type`                 BIGINT COMMENT '计费类型：计件，计重，计体积，一口价，按距离',
+  `charging_unit`                 BIGINT COMMENT '计费单位：件，kg，立方，公里',
+  `first_part`                    BIGINT COMMENT '首部',
+  `first_part_price`              DECIMAL COMMENT '首部价格',
+  `continue_part`                 BIGINT COMMENT '首部',
+  `continue_part_price`           DECIMAL COMMENT '首部价格',
+proc_time string
+)
+COMMENT '运费规则'
+PARTITIONED BY (dt STRING);
+
+
+
+CREATE TABLE IF NOT EXISTS xinc_ods.ods_itemcenter_freight_template_rule(
+  `id`                            BIGINT COMMENT '主键ID',
+  `gmt_create`                    DATETIME COMMENT '创建时间',
+  `gmt_modified`                  DATETIME COMMENT '修改时间',
+  `creator`                       STRING COMMENT '创建人',
+  `modifier`                      STRING COMMENT '修改人',
+  `is_deleted`                    BIGINT COMMENT '是否删除：1(删除) 0(未删除)',
+  `template_id`                   BIGINT COMMENT '运费模板ID',
+  `rule_id`                       BIGINT COMMENT '运费规则ID',
+  `city_ids`                      STRING COMMENT '城市ID列表',
+  proc_time string
+
+)
+COMMENT '指定运费区域'
+PARTITIONED BY (dt STRING);
+
+
+CREATE TABLE IF NOT EXISTS xinc_ods.ods_itemcenter_goods_category_property_value(
+  `id`                            BIGINT COMMENT '主键ID',
+  `gmt_create`                    DATETIME COMMENT '创建时间',
+  `gmt_modified`                  DATETIME COMMENT '修改时间',
+  `creator`                       STRING COMMENT '创建人',
+  `modifier`                      STRING COMMENT '修改人',
+  `is_deleted`                    BIGINT COMMENT '是否删除：1(删除) 0(未删除)',
+  `cat_id`                        STRING COMMENT '类目Id',
+  `property_id`                   STRING COMMENT '属性id',
+  `prop_name`                     STRING COMMENT '属性名',
+  `value_id`                      STRING COMMENT '值id',
+  `prop_value`                    STRING COMMENT '属性值',
+  `is_used`                       BIGINT COMMENT '是否使用(0:未使用;1:使用)',
+  `is_must`                       BIGINT COMMENT '是否必须：1(是) 0(否)',
+  `prop_value_type`               BIGINT COMMENT '属性值类型（1：枚举单选；2：枚举多选；3：枚举可输入单选;4:枚举可输入多选;5:非枚举可输入；默认是枚举单选）',
+  `is_sale_prop`                  BIGINT COMMENT '是否销售属性：1(是) 0(否)',
+proc_time string
+)
+COMMENT '货品类目属性值表'
+PARTITIONED BY (dt STRING);
+
+
+
+CREATE TABLE IF NOT EXISTS xinc_ods_dev.ods_itemcenter_measure_unit(
+  `id`                            BIGINT COMMENT '主键ID',
+  `gmt_create`                    DATETIME COMMENT '创建时间',
+  `gmt_modified`                  DATETIME COMMENT '修改时间',
+  `creator`                       STRING COMMENT '创建人',
+  `creator_cn`                    STRING COMMENT '创建人中文姓名',
+  `modifier`                      STRING COMMENT '修改人',
+  `modifier_cn`                   STRING COMMENT '修改人中文姓名',
+  `is_deleted`                    BIGINT COMMENT '是否删除：1(删除) 0(未删除)',
+  `unit_name`                     STRING COMMENT '单位名称',
+  `unit_symbol`                   STRING COMMENT '单位符号',
+  `unit_convert`                  STRING COMMENT '单位转换',
+  `is_used`                       BIGINT COMMENT '是否启用(1:是,0:否)',
+proc_time string
+)
+COMMENT '计量单位表'
+PARTITIONED BY (dt STRING);
+
+
+CREATE TABLE IF NOT EXISTS xinc_ods.ods_itemcenter_pricing_proposal(
+  `id`                            BIGINT COMMENT '主键id',
+  `gmt_create`                    DATETIME COMMENT '创建时间',
+  `gmt_modified`                  DATETIME COMMENT '修改时间',
+  `creator`                       STRING COMMENT '创建人',
+  `modifier`                      STRING COMMENT '修改人',
+  `is_deleted`                    BIGINT COMMENT '是否删除：1(删除) 0(未删除)',
+  `proposal_name`                 STRING COMMENT '提案单名称',
+  `sample_num`                    BIGINT COMMENT '样品总数',
+  `supplier_id`                   BIGINT COMMENT '供应商id',
+  `cat_id`                        STRING COMMENT '类目id',
+  `status`                        BIGINT COMMENT '单据状态',
+  `pricing_status`                BIGINT COMMENT '核价状态',
+  `sample_status`                 BIGINT COMMENT '样品状态',
+  `urgency_degree`                BIGINT COMMENT '紧急程度(1:普通;2:紧急)',
+  `gmt_feedback_end`              DATETIME COMMENT '核价反馈要求截止时间',
+  `print_user_id`                 BIGINT COMMENT '打印人id',
+  `gmt_print`                     DATETIME COMMENT '打印时间',
+  `print_num`                     BIGINT COMMENT '打印次数',
+  `pricing_user_id`               BIGINT COMMENT '核价员id',
+  `gmt_allot`                     DATETIME COMMENT '分配时间',
+  `handover_user_id`              BIGINT COMMENT '移交人id',
+  `gmt_handover`                  DATETIME COMMENT '移交时间',
+  `signature_user_id`             BIGINT COMMENT '签收人id',
+  `gmt_signature`                 DATETIME COMMENT '签收时间',
+  `return_user_id`                BIGINT COMMENT '归还人id',
+  `gmt_return`                    DATETIME COMMENT '归还时间',
+  `gather_user_id`                BIGINT COMMENT '收取人id',
+  `gmt_gather`                    DATETIME COMMENT '收取时间',
+  `special_status`                BIGINT COMMENT '特批状态（0:否;1:是）',
+  `second_review_flag`            BIGINT COMMENT '是否二次核价（0:否;1:是）',
+  `second_review_reason_type`     BIGINT COMMENT '二次核价原因类型',
+  `current_pricing_level`         BIGINT COMMENT '当前核价环节(级别)',
+  `approve_id`                    BIGINT COMMENT '审批流id',
+  `current_approver_id`           STRING COMMENT '当前经办人id',
+  `description`                   STRING COMMENT '备注',
+  `origin_id`                     BIGINT COMMENT '原始id(二次核价和价格特批会关联原核价单)',
+  `sku_num`                       BIGINT COMMENT 'SKU总数',
+  `coop_mode`                     BIGINT COMMENT '合作模式',
+  `special_goods`                 BIGINT COMMENT '特殊商品（0:否;1:是）',
+  `pricing_type`                  BIGINT COMMENT '核价方式',
+  `parity_pic`                    STRING COMMENT '比价图',
+  `parity_lowest_price`           DECIMAL COMMENT '比价最低价',
+  `parity_highest_price`          DECIMAL COMMENT '比价最高价',
+  `gmt_parity_deadline`           DATETIME COMMENT '比价截止日期',
+  `parity_data_source`            STRING COMMENT '比价数据来源地址',
+  `cat_full_path`                 STRING COMMENT '类目全路径',
+proc_time string
+)
+COMMENT '核价提案单'
+PARTITIONED BY (dt STRING);
+
+
+CREATE TABLE IF NOT EXISTS xinc_ods_dev.ods_itemcenter_pricing_proposal_create_config(
+  `id`                            BIGINT COMMENT '主键id',
+  `gmt_create`                    DATETIME COMMENT '创建时间',
+  `gmt_modified`                  DATETIME COMMENT '修改时间',
+  `creator`                       STRING COMMENT '创建人',
+  `modifier`                      STRING COMMENT '修改人',
+  `is_deleted`                    BIGINT COMMENT '是否删除：1(删除) 0(未删除)',
+  `dept_code`                     STRING COMMENT '部门编码',
+  `dept_desc`                     STRING COMMENT '部门描述',
+  `special_goods`                 BIGINT COMMENT '特殊商品（0:否;1:是）',
+  `coop_mode`                     BIGINT COMMENT '合作模式',
+  `template_type`                 BIGINT COMMENT '核价模板类目类型',
+  `record`                        STRING COMMENT '填写字段规则JSON(字段名:是否必填)',
+proc_time string
+)
+COMMENT '核价提案单新建配置'
+PARTITIONED BY (dt STRING);
+
+
+CREATE TABLE IF NOT EXISTS xinc_ods.ods_itemcenter_pricing_proposal_goods(
+  `id`                            BIGINT COMMENT '主键id',
+  `gmt_create`                    DATETIME COMMENT '创建时间',
+  `gmt_modified`                  DATETIME COMMENT '修改时间',
+  `creator`                       STRING COMMENT '创建人',
+  `modifier`                      STRING COMMENT '修改人',
+  `is_deleted`                    BIGINT COMMENT '是否删除：1(删除) 0(未删除)',
+  `pricing_proposal_id`           BIGINT COMMENT '提案单id',
+  `supplier_id`                   BIGINT COMMENT '供应商id',
+  `goods_id`                      STRING COMMENT '货品id',
+  `style_code`                    STRING COMMENT '款式编码',
+  `goods_code`                    STRING COMMENT '货品编码',
+  `unit_per_num`                  STRING COMMENT '单位/数量',
+  `zero_profit_price`             DECIMAL COMMENT '零利润成本(单位:元)',
+  `profit_point`                  DECIMAL COMMENT '利润点',
+  `profit_price`                  DECIMAL COMMENT '利润',
+  `tax_point`                     DECIMAL COMMENT '税点',
+  `tax_price`                     DECIMAL COMMENT '税费',
+  `pack_price`                    DECIMAL COMMENT '包装(单位:元)',
+  `freight_price`                 DECIMAL COMMENT '运费(单位:元)',
+  `now_inventory`                 BIGINT COMMENT '现货库存',
+  `capacity`                      BIGINT COMMENT '日产量',
+  `supply_price`                  DECIMAL COMMENT '供货价(单位:元)',
+  `pricing_price`                 DECIMAL COMMENT '核价(单位:元)',
+  `buckle_barcode`                STRING COMMENT '卡扣条码',
+  `manage_confirm_price`          DECIMAL COMMENT '部门经理确认价(单位：元)',
+  `general_manage_confirm_price`  DECIMAL COMMENT '总经理确认价(单位：元)',
+  `pricing_status`                BIGINT COMMENT '核价状态',
+  `special_status`                BIGINT COMMENT '特批状态（0:否;1:是）',
+  `second_review_flag`            BIGINT COMMENT '是否二次核价（0:否;1:是）',
+  `goods_supplier_id`             BIGINT COMMENT '货品供应商id',
+  `only_buckle_barcode`           STRING COMMENT '卡扣条码唯一约束',
+  `sample_flag`                   BIGINT COMMENT '是否送样 (0:否;1:是)',
+  `brand_premium_point`           DECIMAL COMMENT '品牌溢价点',
+  `ip_point`                      DECIMAL COMMENT 'IP点',
+  `tag_price`                     DECIMAL COMMENT '吊牌价(单位:元)',
+  `live_price`                    DECIMAL COMMENT '直播价(单位:元)',
+  `commission_point`              DECIMAL COMMENT '佣金点',
+  `commodity_discount_rate`       DECIMAL COMMENT '商品折扣率',
+  `extend`                        STRING COMMENT '核价类目模板扩展字段JSON',
+  `brand_premium_price`           DECIMAL COMMENT '品牌溢价',
+  `ip_price`                      DECIMAL COMMENT 'IP费',
+  `commission_price`              DECIMAL COMMENT '佣金',
+  `spec_supply_price`             DECIMAL COMMENT '特殊供货价(单位:元)',
+  `gmt_invalid`                   DATETIME COMMENT '核价失效日期',
+  `pricing_type`                  BIGINT COMMENT '核价方式'
+  ,proc_time string
+)
+COMMENT '核价提案单货品明细'
+PARTITIONED BY (dt STRING);
+
+
+CREATE TABLE IF NOT EXISTS xinc_ods_dev.ods_itemcenter_pricing_proposal_operate_log(
+  `id`                            BIGINT COMMENT '主键id',
+  `gmt_create`                    DATETIME COMMENT '创建时间',
+  `gmt_modified`                  DATETIME COMMENT '修改时间',
+  `creator`                       STRING COMMENT '创建人',
+  `modifier`                      STRING COMMENT '修改人',
+  `is_deleted`                    BIGINT COMMENT '是否删除：1(删除) 0(未删除)',
+  `pricing_proposal_id`           BIGINT COMMENT '提案单id',
+  `operate_type`                  BIGINT COMMENT '操作行为',
+  `operate_desc`                  STRING COMMENT '操作描述'
+,proc_time string
+
+)
+COMMENT '核价提案操作日志'
+PARTITIONED BY (dt STRING);
+
+CREATE TABLE IF NOT EXISTS xinc_ods.ods_itemcenter_pricing_proposal_review(
+  `id`                            BIGINT COMMENT '主键id',
+  `gmt_create`                    DATETIME COMMENT '创建时间',
+  `gmt_modified`                  DATETIME COMMENT '修改时间',
+  `creator`                       STRING COMMENT '创建人',
+  `modifier`                      STRING COMMENT '修改人',
+  `is_deleted`                    BIGINT COMMENT '是否删除：1(删除) 0(未删除)',
+  `pricing_proposal_id`           BIGINT COMMENT '提案单id',
+  `file_name`                     STRING COMMENT '文件名称',
+  `origin_file`                   STRING COMMENT '原始上传的附件'
+,proc_time string
+)
+COMMENT '核价提案单二次核价'
+PARTITIONED BY (dt STRING);
+
+
+CREATE TABLE IF NOT EXISTS xinc_ods_dev.ods_itemcenter_qualification_audit_bill(
+  `id`                            BIGINT COMMENT '主键id',
+  `gmt_create`                    DATETIME COMMENT '创建时间',
+  `gmt_modified`                  DATETIME COMMENT '修改时间',
+  `creator`                       STRING COMMENT '创建人',
+  `modifier`                      STRING COMMENT '修改人',
+  `is_deleted`                    BIGINT COMMENT '是否删除：1(删除) 0(未删除)',
+  `supplier_id`                   BIGINT COMMENT '供应商id',
+  `goods_id`                      STRING COMMENT '货品id',
+  `goods_code`                    STRING COMMENT '货品编码',
+  `style_code`                    STRING COMMENT '款式编码',
+  `cat_id`                        STRING COMMENT '类目id',
+  `auditor_user_id`               STRING COMMENT '审核人用户id',
+  `bill_status`                   BIGINT COMMENT '0:初始，1:处理中(暂时没有)，2:已完成 3:已取消(暂时没有)',
+  `audit_status`                  BIGINT COMMENT '审核状态，0:初始，1:审核中，2:未通过 3:已通过 4:已过期',
+  `goods_supplier_id`             BIGINT COMMENT '供应商货品id'
+,proc_time string
+)
+COMMENT '资质审核单据表'
+PARTITIONED BY (dt STRING);
+
+
+
+CREATE TABLE IF NOT EXISTS xinc_ods.ods_itemcenter_pricing_proposal_template(
+  `id`                            BIGINT COMMENT '主键id',
+  `gmt_create`                    DATETIME COMMENT '创建时间',
+  `gmt_modified`                  DATETIME COMMENT '修改时间',
+  `creator`                       STRING COMMENT '创建人',
+  `modifier`                      STRING COMMENT '修改人',
+  `is_deleted`                    BIGINT COMMENT '是否删除：1(删除) 0(未删除)',
+  `cat_no`                        STRING COMMENT '类目编号',
+  `template_type`                 BIGINT COMMENT '核价模板类目类型'
+,proc_time string
+)
+COMMENT '核价模板类目表'
+PARTITIONED BY (dt STRING);
+
+CREATE TABLE IF NOT EXISTS xinc_ods.ods_itemcenter_quality_control_bill(
+  `id`                            BIGINT COMMENT '唯一标识',
+  `gmt_create`                    DATETIME COMMENT '创建时间',
+  `gmt_modified`                  DATETIME COMMENT '修改时间',
+  `is_deleted`                    BIGINT COMMENT '是否删除：1(删除) 0(未删除)',
+  `creator`                       STRING COMMENT '创建人',
+  `modifier`                      STRING COMMENT '修改人',
+  `live_plan_id`                  BIGINT COMMENT '直播计划id'
+,proc_time string
+
+)
+COMMENT '品控单'
+PARTITIONED BY (dt STRING);
+
+
+
+CREATE TABLE IF NOT EXISTS xinc_ods_dev.ods_itemcenter_quality_control_bill_detail(
+  `id`                            BIGINT COMMENT '唯一标识',
+  `gmt_create`                    DATETIME COMMENT '创建时间',
+  `gmt_modified`                  DATETIME COMMENT '修改时间',
+  `is_deleted`                    BIGINT COMMENT '是否删除：1(删除) 0(未删除)',
+  `creator`                       STRING COMMENT '创建人',
+  `modifier`                      STRING COMMENT '修改人',
+  `quality_control_opinion`       BIGINT COMMENT '品控意见 1:允许;2:拒绝',
+  `quality_control_bill_id`       BIGINT COMMENT '直播品控审核单id',
+  `quality_control_operator`      STRING COMMENT '品控人',
+  `live_plan_id`                  BIGINT COMMENT '直播计划id',
+  `item_supplier_key`             BIGINT COMMENT '平台商品供应商key'
+,proc_time string
+)
+COMMENT '直播品控审核单明细'
+PARTITIONED BY (dt STRING);
+
+
+
+CREATE TABLE IF NOT EXISTS xinc_ods.ods_itemcenter_quality_control_log(
+  `id`                            BIGINT COMMENT '唯一标识',
+  `gmt_create`                    DATETIME COMMENT '创建时间',
+  `gmt_modified`                  DATETIME COMMENT '修改时间',
+  `is_deleted`                    BIGINT COMMENT '是否删除：1(删除) 0(未删除)',
+  `creator`                       STRING COMMENT '创建人',
+  `modifier`                      STRING COMMENT '修改人',
+  `task_id`                       BIGINT COMMENT '任务ID',
+  `type`                          BIGINT COMMENT '类型',
+  `description`                   STRING COMMENT '说明描述',
+  `ext`                           STRING COMMENT '拓展信息',
+  `log_type`                      BIGINT COMMENT '日志操作业务实体类型，0：品控审核；1：资质审核'
+,proc_time string
+)
+COMMENT '品控日志'
+PARTITIONED BY (dt STRING);
+
+
+CREATE TABLE IF NOT EXISTS xinc_ods_dev.ods_itemcenter_quality_control_sample(
+  `id`                            BIGINT COMMENT '唯一标识',
+  `gmt_create`                    DATETIME COMMENT '创建时间',
+  `gmt_modified`                  DATETIME COMMENT '修改时间',
+  `creator`                       STRING COMMENT '创建人',
+  `modifier`                      STRING COMMENT '修改人',
+  `is_deleted`                    BIGINT COMMENT '是否已经删除',
+  `goods_id`                      STRING COMMENT '货品唯一标识',
+  `supplier_id`                   STRING COMMENT '供应商唯一标识',
+  `is_need_clear`                 BIGINT COMMENT '是否需要清样'
+,proc_time string
+)
+COMMENT '样品'
+PARTITIONED BY (dt STRING);
+
+
+CREATE TABLE IF NOT EXISTS xinc_ods.ods_itemcenter_quality_control_task(
+  `id`                            BIGINT COMMENT '唯一标识',
+  `gmt_create`                    DATETIME COMMENT '创建时间',
+  `gmt_modified`                  DATETIME COMMENT '修改时间',
+  `is_deleted`                    BIGINT COMMENT '是否删除：1(删除) 0(未删除)',
+  `creator`                       STRING COMMENT '创建人',
+  `modifier`                      STRING COMMENT '修改人',
+  `sample_status`                 BIGINT COMMENT '样品状态 1:待送样',
+  `goods_id`                      STRING COMMENT '货品唯一ID',
+  `supplier_id`                   BIGINT COMMENT '供应商id',
+  `goods_supplier_id`             BIGINT COMMENT '货品供应商关系表id',
+  `purchase_department_id`        STRING COMMENT '采购部门id',
+  `merchant_buyer`                STRING COMMENT '招商/买手',
+  `return_sample`                 BIGINT COMMENT '是否需要退样 0:否;1:是',
+  `send_sample_date`              DATETIME COMMENT '送样时间',
+  `sign_in_date`                  DATETIME COMMENT '签收时间',
+  `on_shelf_date`                 DATETIME COMMENT '上架时间',
+  `off_shelf_date`                DATETIME COMMENT '下架时间',
+  `seal_sample_date`              DATETIME COMMENT '封样时间',
+  `expiration_date`               DATETIME COMMENT '品控到期时间',
+  `is_specially_approved`         BIGINT COMMENT '是否特批',
+  `sign_in_status`                BIGINT COMMENT '签收结果 1:签收;2:拒签',
+  `seal_sample_status`            BIGINT COMMENT '封样结果 1:合格;2不合格',
+  `reject_sign_in_number`         BIGINT COMMENT '拒签次数',
+  `warehouse_id`                  BIGINT COMMENT '仓库ID',
+  `sample_urgency_level`          BIGINT COMMENT '样品紧急程度，0：不紧急；1：紧急',
+  `seal_sample_operator`          STRING COMMENT '封样操作人',
+  `sign_in_amount`                BIGINT COMMENT '签收数量',
+  `send_sample_amount`            BIGINT COMMENT '送样数量',
+  `seal_sample_number`            BIGINT COMMENT '重新封样次数',
+  `seal_sample_unqualified_number`BIGINT COMMENT '封样不合格次数',
+  `goods_code`                    STRING COMMENT '货品编码',
+  `cat_id`                        STRING COMMENT '类目id',
+  `style_code`                    STRING COMMENT '款式编码'
+,proc_time string
+)
+COMMENT '品控任务'
+PARTITIONED BY (dt STRING);
+
+
+
+CREATE TABLE IF NOT EXISTS xinc_ods_dev.ods_itemcenter_report_export_history(
+  `id`                            BIGINT COMMENT '报表历史导出记录Id',
+  `report_type`                   BIGINT COMMENT '报表类型,1:品控任务报表',
+  `export_param`                  STRING COMMENT '导入传参',
+  `export_sso_result`             STRING COMMENT '返回传参',
+  `status`                        BIGINT COMMENT '导出结果：1、初始化；2、导出失败；3、导出成功',
+  `remark`                        STRING COMMENT '备注',
+  `creator`                       STRING COMMENT '创建人',
+  `modifier`                      STRING COMMENT '修改人',
+  `gmt_create`                    DATETIME COMMENT '创建时间',
+  `gmt_modified`                  DATETIME COMMENT '修改时间',
+  `is_deleted`                    BIGINT COMMENT '是否删除：1(删除) 0(未删除)'
+,proc_time string
+
+)
+COMMENT '报表历史导出记录'
+PARTITIONED BY (dt STRING);
+
+
+
+CREATE TABLE IF NOT EXISTS xinc_ods.ods_itemcenter_record_principal(
+  `id`                            BIGINT COMMENT '主键ID',
+  `gmt_create`                    DATETIME COMMENT '创建时间',
+  `gmt_modified`                  DATETIME COMMENT '修改时间',
+  `creator`                       STRING COMMENT '创建人',
+  `modifier`                      STRING COMMENT '修改人',
+  `is_deleted`                    BIGINT COMMENT '是否删除：1(删除) 0(未删除)',
+  `principal_id`                  STRING COMMENT '负责人Id',
+  `principal_name`                STRING COMMENT '负责人名称',
+  `biz_type`                      BIGINT COMMENT '记录类型 (1:款式货品负责人;)',
+  `biz_id`                        STRING COMMENT '业务Id,根据各业务需求填写'
+,proc_time string
+)
+COMMENT '记录负责人'
+PARTITIONED BY (dt STRING);
